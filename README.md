@@ -1,5 +1,7 @@
 # Template 3
 
+🔗 **Онлайн демо (Live Demo):** [https://template-3-inky.vercel.app/](https://template-3-inky.vercel.app/)
+
 Современный, быстрый и адаптивный одностраничный сайт (Landing Page) для туристического агентства, разработанный на фреймворке **Astro SSR** с использованием **TypeScript**, компонентов **Astro**, интеграцией виджетов поиска туров и круизов, а также серверным API отправки заявок по **SMTP**.
 
 ---
@@ -35,11 +37,10 @@
 
 ## 🛠 Стек технологий
 
-- **Фреймворк**: [Astro](https://astro.build/) (v5)
+- **Фреймворк**: [Astro](https://astro.build/)
 - **Язык**: TypeScript
-- **Сборщик**: Vite
 - **Почта**: [Nodemailer](https://nodemailer.com/)
-- **Стилизация**: Scoped CSS, CSS Custom Properties, адаптивная вёрстка (Mobile First)
+- **Стилизация**: Scoped CSS, CSS Custom Properties, адаптивная вёрстка.
 
 ---
 
@@ -56,12 +57,6 @@
 
    ```bash
    npm install
-   ```
-
-3. **Создайте файл переменных окружения**:
-   Скопируйте пример файла `.env.example` в `.env`:
-   ```bash
-   cp .env.example .env
    ```
 
 ---

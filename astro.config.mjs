@@ -1,21 +1,19 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
 import vercel from '@astrojs/vercel';
-import purgecss from 'astro-purgecss';
-
-const isVercel = Boolean(process.env.VERCEL);
+import autoprefixer from 'autoprefixer';
 
 // https://astro.build/config
 export default defineConfig({
-  build: {
-    inlineStylesheets: 'never', // Отключает инлайнинг CSS
-  },
+  base: '/',
+  site: 'https://template-3-inky.vercel.app/',
   output: 'server',
-  adapter: isVercel
-    ? vercel()
-    : node({
-        mode: 'standalone',
-      }),
-  integrations: [purgecss()],
+  adapter: vercel(),
+  vite: {
+    css: {
+      postcss: {
+        plugins: [autoprefixer()],
+      },
+    },
+  },
 });
