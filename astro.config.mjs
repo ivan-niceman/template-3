@@ -7,7 +7,7 @@ import autoprefixer from 'autoprefixer';
 export default defineConfig({
   base: '/',
   site: 'https://template-3-inky.vercel.app/',
-  output: 'server',
+  output: 'static',
   adapter: vercel(),
   vite: {
     css: {
