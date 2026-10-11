@@ -1,0 +1,391 @@
+---
+import logoImg from '../assets/images/logo.svg';
+---
+
+<header class="header">
+  <div class="header__menu" id="headerMenu">
+    <div class="container header__menu-container">
+      <a href="/" class="logo" aria-label="На главную">
+        <img src={logoImg.src} alt="Ваш логотип" width="63" height="63" />
+        <p class="logo-description">Ваш логотип</p>
+      </a>
+
+      <div class="social">
+        <a href="https://wa.me/" class="social__whatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"></a>
+        <a href="https://t.me/" class="social__telegram" target="_blank" rel="noopener noreferrer" aria-label="Telegram"></a>
+        <a href="https://vk.com/" class="social__vk" target="_blank" rel="noopener noreferrer" aria-label="VKontakte"></a>
+      </div>
+
+      <a class="phone" href="tel:+74957773341">+7 495 777 33 41</a>
+
+      <button class="burger-btn" id="burgerBtn" type="button" aria-label="Открыть меню">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="mobile-menu" id="mobileMenuBackdrop"></div>
+
+      <nav class="nav" id="mainNav">
+        <ul class="nav__list">
+          <li><a href="/#search-tour" class="nav__link">Поиск тура</a></li>
+          <li><a href="/#cruises" class="nav__link">Круизы</a></li>
+          <li><a href="/#stock" class="nav__link">Акции</a></li>
+          <li><a href="/#services" class="nav__link">Услуги</a></li>
+          <li><a href="/#about" class="nav__link">О нас</a></li>
+          <li><a href="/#feedback" class="nav__link">Отзывы</a></li>
+        </ul>
+
+        <div class="nav__contacts">
+          <a href="tel:+74957773341" class="nav-phone">+7 495 777 33 41</a>
+          <a href="https://t.me/" target="_blank" rel="noopener noreferrer" class="nav-telegram">
+            <p class="telegram-channel">Подписаться на<br />telegram-канал</p>
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M20 0C8.95 0 0 8.95 0 20C0 31.04 8.95 40 20 40C31.04 40 40 31.04 40 20C40 8.95 31.04 0 20 0ZM29.82 13.7L26.54 29.16C26.29 30.26 25.64 30.53 24.73 30.01L19.73 26.33L17.32 28.65C17.09 28.95 16.72 29.14 16.32 29.14L16.66 24.05L25.93 15.68C26.33 15.33 25.84 15.12 25.31 15.48L13.86 22.69L8.93 21.15C7.86 20.81 7.83 20.08 9.15 19.56L28.43 12.13C29.33 11.8 30.11 12.34 29.82 13.7Z"
+                fill="#000000"
+              />
+            </svg>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const burgerBtn = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenuBackdrop');
+    const nav = document.getElementById('mainNav');
+    const headerMenu = document.getElementById('headerMenu');
+    const navLinks = document.querySelectorAll('.nav__link');
+
+    // Sticky menu shadow and position on scroll
+    function handleScroll() {
+      if (!headerMenu) return;
+      if (window.scrollY > 80) {
+        headerMenu.classList.add('header__menu_active');
+      } else {
+        headerMenu.classList.remove('header__menu_active');
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    function openNav() {
+      burgerBtn?.classList.add('burger-visible');
+      mobileMenu?.classList.add('mobile-menu_active');
+      nav?.classList.add('nav_active');
+      document.body.classList.add('body-hidden');
+    }
+
+    function closeNav() {
+      burgerBtn?.classList.remove('burger-visible');
+      mobileMenu?.classList.remove('mobile-menu_active');
+      nav?.classList.remove('nav_active');
+      document.body.classList.remove('body-hidden');
+    }
+
+    burgerBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (nav?.classList.contains('nav_active')) {
+        closeNav();
+      } else {
+        openNav();
+      }
+    });
+
+    mobileMenu?.addEventListener('click', closeNav);
+
+    navLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        closeNav();
+        const href = link.getAttribute('href');
+        if (href && href.startsWith('/#')) {
+          const isHomePage = window.location.pathname === '/' || window.location.pathname === '';
+          const targetId = href.replace('/#', '');
+          const targetEl = document.getElementById(targetId);
+          if (targetEl && isHomePage) {
+            e.preventDefault();
+            const headerHeight = headerMenu?.offsetHeight || 80;
+            const targetPos = targetEl.getBoundingClientRect().top + window.scrollY - headerHeight;
+            window.scrollTo({ top: targetPos, behavior: 'smooth' });
+          }
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+  }
+
+  .header__menu {
+    width: 100%;
+    transition: background-color 0.3s ease, padding 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .header__menu-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+  }
+
+  .header__menu_active {
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: var(--link-active);
+    width: 100%;
+    z-index: 150;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .header__menu_active .header__menu-container {
+    padding: 10px 30px;
+  }
+
+  @media (max-width: 500px) {
+    .header__menu_active .header__menu-container {
+      padding: 10px 15px;
+    }
+  }
+
+  .social {
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+  }
+
+  @media (max-width: 768px) {
+    .header .social {
+      display: none;
+    }
+  }
+
+  .social a {
+    width: 40px;
+    height: 40px;
+    display: block;
+    transition: transform 0.2s ease;
+  }
+
+  .social a:hover {
+    transform: scale(1.1);
+  }
+
+  .social__whatsapp {
+    background: url('../assets/images/icons/whatsapp.svg') center / cover no-repeat;
+  }
+
+  .social__telegram {
+    background: url('../assets/images/icons/telegram.svg') center / cover no-repeat;
+  }
+
+  .social__vk {
+    background: url('../assets/images/icons/vkontakte.svg') center / cover no-repeat;
+  }
+
+  .phone {
+    font-family: 'Roboto', serif;
+    color: #fff;
+    font-size: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .phone:hover {
+    opacity: 0.9;
+  }
+
+  @media (max-width: 768px) {
+    .phone {
+      font-size: 24px;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .header .phone {
+      display: none;
+    }
+  }
+
+  .burger-btn {
+    position: relative;
+    display: flex;
+    width: 40px;
+    height: 19px;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .burger-btn > span {
+    background-color: #fff;
+    height: 3px;
+    width: 100%;
+    transition: 0.3s;
+  }
+
+  .burger-btn > span:nth-child(1) {
+    width: 80%;
+  }
+
+  .burger-btn > span:nth-child(2) {
+    width: 90%;
+  }
+
+  .burger-btn:hover span {
+    width: 100%;
+  }
+
+  .burger-btn.burger-visible {
+    justify-content: center;
+    z-index: 105;
+  }
+
+  .burger-btn.burger-visible > span {
+    position: absolute;
+    background-color: #000;
+    width: 100%;
+  }
+
+  .burger-btn.burger-visible > span:nth-child(1) {
+    transform: rotate(45deg);
+  }
+
+  .burger-btn.burger-visible > span:nth-child(2) {
+    display: none;
+  }
+
+  .burger-btn.burger-visible > span:nth-child(3) {
+    transform: rotate(-45deg);
+  }
+
+  .mobile-menu {
+    opacity: 0;
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    transition: 0.3s;
+    cursor: pointer;
+    z-index: 95;
+  }
+
+  .mobile-menu_active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .nav {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    top: -100vh;
+    right: 0;
+    min-height: 100vh;
+    background-color: #fff;
+    padding: 100px 50px 35px;
+    transition: 0.3s;
+    z-index: 100;
+    cursor: auto;
+  }
+
+  .header__menu_active .container .nav {
+    right: 0;
+  }
+
+  .nav_active {
+    opacity: 1;
+    visibility: visible;
+    top: 0;
+  }
+
+  .nav__list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav__link {
+    color: var(--link-active);
+    font-size: 18px;
+    font-weight: 700;
+    border-bottom: 1px solid transparent;
+    transition: 0.3s;
+    text-decoration: none;
+  }
+
+  .nav__link:hover {
+    color: var(--link-hover);
+    border-bottom: 1px solid var(--link-hover);
+  }
+
+  .nav__contacts {
+    margin-top: 50px;
+  }
+
+  .nav-phone {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: 20px;
+    color: var(--link-active);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 22px;
+    text-decoration: none;
+  }
+
+  .nav-phone::after {
+    content: '';
+    background: var(--icon-phone) center / cover no-repeat;
+    width: 30px;
+    height: 30px;
+    display: block;
+  }
+
+  .nav-telegram {
+    margin-top: 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .telegram-channel {
+    color: var(--link-active);
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .nav-telegram path {
+    fill: #000;
+  }
+</style>

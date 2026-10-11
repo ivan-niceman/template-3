@@ -1,0 +1,79 @@
+---
+---
+
+<span
+  class="upward"
+  id="upwardBtn"
+  role="button"
+  aria-label="Прокрутить страницу наверх"
+></span>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const scrollToTopBtn = document.getElementById('upwardBtn');
+    const footer = document.querySelector('footer');
+
+    function checkScroll(): void {
+      if (!footer || !scrollToTopBtn) return;
+      const footerRect = footer.getBoundingClientRect();
+      const scrollY = window.scrollY || window.pageYOffset;
+
+      // Upward button: appears after scrolling down 600px
+      if (scrollY > 600) {
+        scrollToTopBtn.style.display = 'block';
+      } else {
+        scrollToTopBtn.style.display = 'none';
+      }
+
+      // Smoothly lifts above footer when footer is in view
+      if (footerRect.top <= window.innerHeight) {
+        scrollToTopBtn.style.bottom = `${window.innerHeight - footerRect.top + 20}px`;
+      } else {
+        scrollToTopBtn.style.bottom = '30px';
+      }
+    }
+
+    window.addEventListener('scroll', checkScroll, { passive: true });
+    window.addEventListener('resize', checkScroll, { passive: true });
+    checkScroll();
+
+    scrollToTopBtn?.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    });
+  });
+</script>
+
+<style>
+  .upward {
+    display: none;
+    position: fixed;
+    left: 20px;
+    bottom: 30px;
+    background: url("../assets/images/arrow-slide.svg") center no-repeat;
+    background-size: 24px;
+    transform: rotate(-90deg);
+    width: 48px;
+    height: 48px;
+    border: 2px solid #0c2626;
+    border-radius: 50%;
+    padding: 10px;
+    z-index: 90;
+    cursor: pointer;
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease;
+  }
+
+  .upward:hover {
+    transform: rotate(-90deg) scale(1.1);
+  }
+
+  @media (max-width: 500px) {
+    .upward {
+      left: 10px;
+    }
+  }
+</style>

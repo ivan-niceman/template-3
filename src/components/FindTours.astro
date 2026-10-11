@@ -1,0 +1,122 @@
+---
+// FindTours component (Special offers & discounts)
+---
+
+<section class="find-tours container" id="stock">
+  <div>
+    <h2 class="find-tours__title">
+      Ищете туры со скидками до 30%?<br />Тогда вам сюда!
+    </h2>
+    <p class="find-tours__text">
+      Хотите узнать, на какие туры сейчас скидки?
+    </p>
+  </div>
+  <button class="find-tours-btn feedback-btn" type="button" aria-label="Узнать скидки на туры">
+    Узнать
+    <svg
+      width="21"
+      height="20"
+      viewBox="0 0 20.1877 19.9824"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M15.06 8.49L9.13 2.56C8.54 1.97 8.54 1.03 9.13 0.44C9.72 -0.15 10.66 -0.15 11.25 0.44L19.74 8.93C20.33 9.52 20.33 10.45 19.74 11.05L11.25 19.53C10.66 20.13 9.72 20.13 9.13 19.53C8.54 18.94 8.54 18 9.13 17.41L15.06 11.49L0 11.49L0 8.49L15.06 8.49Z"
+        fill="#000000"
+        fill-rule="evenodd"
+      />
+    </svg>
+  </button>
+</section>
+
+<style>
+  .find-tours {
+    margin-top: 100px;
+    background: url(../assets/images/find-bg.jpeg) center / cover no-repeat;
+    border-radius: 50px;
+    min-height: 600px;
+    padding: 50px 50px 50px 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .find-tours__title {
+    color: #fff;
+    font-size: 60px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .find-tours__text {
+    margin-top: 20px;
+    color: #fff;
+    font-size: 30px;
+    font-weight: 500;
+    margin-bottom: 0;
+  }
+
+  .find-tours-btn {
+    border-radius: 30px;
+    background: #fff;
+    padding: 15px 20px;
+    max-width: 240px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: 700;
+    margin-left: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  @media (max-width: 600px) {
+    .find-tours {
+      margin-top: 5px;
+      padding: 50px 20px;
+      border-radius: 0;
+      text-align: center;
+      min-height: 380px;
+    }
+
+    .find-tours__title {
+      font-size: 28px;
+    }
+
+    .find-tours__text {
+      font-size: 18px;
+    }
+
+    .find-tours-btn {
+      margin: 0 auto;
+    }
+  }
+
+  .find-tours-btn:hover {
+    color: #fff;
+    background: var(--link-hover);
+  }
+
+  .find-tours-btn:active {
+    color: #fff;
+    background: var(--link-active);
+    outline: 1px solid #fff;
+  }
+
+  .find-tours-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .find-tours-btn:hover svg path {
+    fill: #fff;
+  }
+
+  .find-tours-btn:active svg path {
+    fill: #fff;
+  }
+</style>

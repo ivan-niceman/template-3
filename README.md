@@ -1,43 +1,86 @@
-# Astro Starter Kit: Minimal
+# Template 3
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Современный, быстрый и адаптивный одностраничный сайт (Landing Page) для туристического агентства, разработанный на фреймворке **Astro SSR** с использованием **TypeScript**, компонентов **Astro**, интеграцией виджетов поиска туров и круизов, а также серверным API отправки заявок по **SMTP**.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+---
 
-## 🚀 Project Structure
+## 🚀 Основные возможности
 
-Inside of your Astro project, you'll see the following folders and files:
+- **Высокая производительность и SEO**:
+  - Быстрая загрузка благодаря серверному рендерингу (SSR) и оптимизации ассетов в Astro.
+  - Полная микроразметка **Schema.org** (`TravelAgency`, `WebSite`), мета-теги **OpenGraph** и **Twitter Cards**.
+  - Фирменная страница **404** с кодом ответа `404 Not Found` (In-place rendering по стандартам поисковых систем Яндекс и Google, без мягких редиректов).
+- **Интерактивные разделы и виджеты**:
+  - **Hero-баннер** первого экрана с призывом к действию.
+  - **Виджет поиска туров** и **интеграция морских/речных круизов GoCruise**.
+  - **Бесшовный бесконечный слайдер отзывов** с поддержкой свайпов на мобильных устройствах, кликов по стрелкам и навигации с клавиатуры.
+  - **Плавающая кнопка мессенджеров (`SocialFloating`)**: быстрый переход в WhatsApp, Telegram, ВКонтакте. Автоматически скрывается при видимости шапки и корректно позиционируется над подвалом.
+  - **Кнопка «Наверх»**: появляется при прокрутке и плавно возвращает в начало страницы.
+- **Отправка заявок на почту (`/api/lead`)**:
+  - Прямая интеграция со **SMTP** (Timeweb, Mail.ru, Яндекс Почта).
+  - Поддержка кнопки быстрого ответа клиенту в почте (`replyTo: email`).
+  - Фирменное HTML-письмо с данными туриста.
+- **Комплексная защита от спама и ботов**:
+  - Ограничение частоты запросов (**Rate Limiting** по IP-адресу).
+  - Скрытые поля-ловушки (**Honeypot**).
+  - Проверка минимального времени заполнения формы.
+  - Черный список одноразовых почтовых сервисов (10minutemail, tempmail и др.).
+  - Фильтрация спам-слов и защита от ссылочного спама.
+- **Соответствие законодательству РФ (152-ФЗ)**:
+  - Страница «Политика конфиденциальности» (`/privacy`).
+  - Страница «Согласие на обработку персональных данных» (`/consent`).
+  - Интерактивный баннер файлов **Cookie** с возможностью детальной настройки.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+---
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 🛠 Стек технологий
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- **Фреймворк**: [Astro](https://astro.build/) (v5)
+- **Язык**: TypeScript
+- **Сборщик**: Vite
+- **Почта**: [Nodemailer](https://nodemailer.com/)
+- **Стилизация**: Scoped CSS, CSS Custom Properties, адаптивная вёрстка (Mobile First)
 
-Any static assets, like images, can be placed in the `public/` directory.
+---
 
-## 🧞 Commands
+## ⚙️ Установка и локальный запуск
 
-All commands are run from the root of the project, from a terminal:
+1. **Клонируйте репозиторий и перейдите в папку проекта**:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+   ```bash
+   git clone <URL_РЕПОЗИТОРИЯ>
+   cd <ИМЯ_ПАПКИ>
+   ```
 
-## 👀 Want to learn more?
+2. **Установите зависимости**:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+   ```bash
+   npm install
+   ```
+
+3. **Создайте файл переменных окружения**:
+   Скопируйте пример файла `.env.example` в `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+
+---
+
+## 📦 Сборка и запуск в production
+
+- **Проверка типов TypeScript**:
+
+  ```bash
+  npm run lint
+  ```
+
+- **Сборка проекта**:
+
+  ```bash
+  npm run build
+  ```
+
+- **Запуск собранного проекта (Node.js)**:
+  ```bash
+  npm start
+  ```

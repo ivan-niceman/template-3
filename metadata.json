@@ -1,0 +1,6 @@
+{
+  "name": "web site",
+  "description": "Сервис подбора горящих туров по России и всему миру, поиска круизов и бронирования путешествий.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

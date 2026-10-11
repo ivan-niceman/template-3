@@ -1,0 +1,227 @@
+---
+// About section with statistics and agency story
+import womenBg from '../assets/images/women-bg.jpeg';
+---
+
+<section class="about container" id="about">
+  <div class="about__info">
+    <img
+      src={womenBg.src}
+      class="about__info-img"
+      alt="девушки на отдыхе"
+      loading="lazy"
+      width="580"
+      height="720"
+    />
+    <div class="about__info-card">
+      <p class="about__info-number">300+</p>
+      <p class="about__info-name">КУРОРТОВ</p>
+    </div>
+    <div class="about__info-card">
+      <p class="about__info-number">5000+</p>
+      <p class="about__info-name">ТУРИСТОВ</p>
+    </div>
+    <div class="about__info-card">
+      <p class="about__info-number">1500+</p>
+      <p class="about__info-name">ОТЕЛЕЙ</p>
+    </div>
+  </div>
+
+  <div class="about__description">
+    <h2 class="about-title">
+      ПУТЕШЕСТВУЙ И УЗНАВАЙ ЭТОТ УДИВИТЕЛЬНЫЙ МИР ВМЕСТЕ С НАМИ
+    </h2>
+    <p class="about-text">
+      Добро пожаловать в нашу туристическую компанию, где ваша
+      безопасность и комфорт – наш главный приоритет!
+    </p>
+    <p class="about-text">
+      Наша фирма с многолетним опытом работы в сфере туризма
+      зарекомендовала себя, как надежный партнер для организации
+      путешествий любой сложности. Мы гордимся тем, что продаем уникальные
+      и продуманные туры, тщательно учитывая все детали, чтобы ваш отдых
+      был не только ярким и запоминающимся, но и безопасным.
+    </p>
+    <p class="about-text">
+      Путешествуйте с нами – выберите надежного партнера для своих
+      приключений!
+    </p>
+    <button type="button" class="about-link feedback-btn">Связаться с нами</button>
+  </div>
+</section>
+
+<style>
+  .about {
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: 1fr 590px;
+    gap: 50px;
+  }
+
+  @media (max-width: 1024px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .about__info {
+    position: relative;
+    text-align: center;
+    padding: 0 20px;
+    margin: 0 auto;
+    max-width: 768px;
+    width: 100%;
+  }
+
+  .about__info-img {
+    border-radius: 75px;
+    height: 720px;
+    max-width: 580px;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .about__info-card {
+    position: absolute;
+    max-width: 180px;
+    width: 100%;
+    padding: 20px 25px;
+    background-color: #fff;
+    border-radius: 35px;
+    box-shadow: 0px 0px 37px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  .about__info-card:nth-of-type(1) {
+    top: 77px;
+    right: 0;
+  }
+
+  .about__info-card:nth-of-type(2) {
+    bottom: 210px;
+    left: 0;
+  }
+
+  .about__info-card:nth-of-type(3) {
+    right: 0;
+    bottom: 40px;
+  }
+
+  .about__info-number {
+    color: rgb(222, 182, 90);
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .about__info-name {
+    color: rgb(61, 61, 63);
+    font-size: 18px;
+    margin: 0;
+  }
+
+  @media (max-width: 500px) {
+    .about__info-img {
+      height: 350px;
+    }
+
+    .about__info-card {
+      border-radius: 25px;
+      padding: 15px 20px;
+      width: auto;
+    }
+
+    .about__info-card:nth-of-type(2) {
+      bottom: 110px;
+    }
+
+    .about__info-number {
+      font-size: 18px;
+    }
+
+    .about__info-name {
+      font-size: 12px;
+    }
+  }
+
+  .about__description {
+    max-width: 620px;
+    margin: 70px auto 0;
+  }
+
+  @media (max-width: 1024px) {
+    .about__description {
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+
+  .about-title {
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 500px) {
+    .about__description {
+      text-align: center;
+    }
+
+    .about-title {
+      font-size: 18px;
+    }
+  }
+
+  .about-text {
+    color: rgb(61, 61, 63);
+    font-size: 18px;
+    font-weight: 500;
+    max-width: 470px;
+  }
+
+  .about-text:not(:last-of-type) {
+    margin-bottom: 10px;
+  }
+
+  .about-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 50px;
+    max-width: 300px;
+    width: 100%;
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    font-weight: 700;
+    padding: 15px 20px;
+    border-radius: 40px;
+    background: linear-gradient(155deg, rgb(222, 182, 90) 26%, rgb(165, 117, 7) 88%, rgb(165, 117, 7) 88%);
+    transition: 0.3s;
+    text-decoration: none;
+  }
+
+  .about-link:hover {
+    background: var(--link-hover);
+  }
+
+  .about-link:active {
+    background: var(--link-active);
+  }
+
+  .about-link::after {
+    content: '';
+    background: url(../assets/images/arrow-r.svg) center / cover no-repeat;
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+
+  @media (max-width: 500px) {
+    .about-link {
+      margin-inline: auto;
+    }
+  }
+</style>

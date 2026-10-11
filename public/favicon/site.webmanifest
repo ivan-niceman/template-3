@@ -1,0 +1,14 @@
+{
+  "name": "Горящие туры и круизы",
+  "short_name": "Туры и круизы",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#0c2626",
+  "background_color": "#0c2626",
+  "display": "standalone"
+}

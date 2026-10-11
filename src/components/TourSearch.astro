@@ -1,0 +1,32 @@
+---
+// TourSearch component
+---
+
+<section class="search-tour container" id="search-tour">
+  <h2 class="title">Поиск тура</h2>
+  <div class="widget" role="region" aria-label="Поиск горящих туров"></div>
+</section>
+
+<style>
+  .search-tour {
+    margin-top: -328px;
+    transform: translateY(-100px);
+  }
+
+  @media (max-width: 500px) {
+    .search-tour {
+      transform: translateY(-20px);
+    }
+  }
+
+  .search-tour .title {
+    padding: 0;
+  }
+
+  .widget {
+    margin-top: 50px;
+    background: url(../assets/images/widget.jpeg) center / contain no-repeat;
+    width: 100%;
+    height: 250px;
+  }
+</style>

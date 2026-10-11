@@ -1,0 +1,122 @@
+---
+// Team section
+import team1 from '../assets/images/team/team-1.jpeg';
+import team2 from '../assets/images/team/team-2.jpeg';
+import team3 from '../assets/images/team/team-3.jpeg';
+import team4 from '../assets/images/team/team-4.jpeg';
+
+const teamMembers = [
+  {
+    name: 'Анна Митрофанова',
+    info: 'стаж работы 12 лет,\nлюбимая страна Турция',
+    photo: team1,
+  },
+  {
+    name: 'Анна Митрофанова',
+    info: 'стаж работы 12 лет,\nлюбимая страна Турция',
+    photo: team2,
+  },
+  {
+    name: 'Анна Митрофанова',
+    info: 'стаж работы 12 лет,\nлюбимая страна Турция',
+    photo: team3,
+  },
+  {
+    name: 'Анна Митрофанова',
+    info: 'стаж работы 12 лет,\nлюбимая страна Турция',
+    photo: team4,
+  },
+];
+---
+
+<section class="team container" id="team">
+  <h2 class="title">наша команда</h2>
+  <ul class="team__list">
+    {teamMembers.map((member) => (
+      <li class="team__item">
+        <div
+          class="team__photo"
+          role="img"
+          aria-label={`Специалист ${member.name}`}
+          style={`background-image: url('${member.photo.src}'); background-repeat: no-repeat; background-position: -65px 0px;`}
+        ></div>
+        <h3 class="team__name">{member.name}</h3>
+        <p class="team__info" style="white-space: pre-line;">{member.info}</p>
+        <div class="team__social">
+          <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <svg width="27" height="27" viewBox="0 0 26.5 26.5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M20.52 18.4C20.22 19.25 19.02 19.95 18.07 20.16C17.41 20.3 16.56 20.41 13.69 19.22C10.46 17.88 5.98 13.12 5.98 9.95C5.98 8.34 6.91 6.46 8.54 6.46C9.32 6.46 9.49 6.48 9.75 7.09C10.05 7.82 10.79 9.62 10.88 9.8C11.24 10.55 10.51 10.99 9.98 11.65C9.81 11.85 9.62 12.06 9.83 12.43C10.05 12.79 10.78 13.99 11.86 14.95C13.26 16.19 14.39 16.59 14.79 16.76C15.09 16.88 15.45 16.85 15.67 16.62C15.95 16.32 16.3 15.82 16.65 15.32C16.9 14.97 17.21 14.93 17.55 15.05C17.77 15.13 20.61 16.45 20.73 16.66C20.82 16.82 20.82 17.54 20.52 18.4ZM13.25 0.75C6.36 0.75 0.75 6.35 0.75 13.25C0.75 15.98 1.63 18.51 3.13 20.57L1.57 25.22L6.37 23.68C8.35 24.99 10.71 25.75 13.25 25.75C20.14 25.75 25.75 20.14 25.75 13.25C25.75 6.35 20.14 0.75 13.25 0.75Z"
+                fill="#FFFFFF"
+                fill-opacity="0"
+                stroke="#000000"
+                stroke-width="1.5"
+              />
+            </svg>
+          </a>
+          <a href="https://t.me/" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+            <svg width="27" height="27" viewBox="0 0 26.5 26.5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M13.25 0.75C6.34 0.75 0.75 6.34 0.75 13.25C0.75 20.15 6.34 25.75 13.25 25.75C20.15 25.75 25.75 20.15 25.75 13.25C25.75 6.34 20.15 0.75 13.25 0.75ZM19.38 9.31L17.33 18.98C17.18 19.66 16.77 19.83 16.2 19.5L13.08 17.2L11.57 18.65C11.43 18.84 11.2 18.96 10.95 18.96L11.16 15.78L16.96 10.55C17.21 10.33 16.9 10.2 16.57 10.42L9.41 14.93L6.33 13.97C5.66 13.76 5.64 13.3 6.47 12.97L18.52 8.33C19.08 8.12 19.57 8.46 19.38 9.31Z"
+                fill="#000000"
+                stroke="#000000"
+                stroke-width="1"
+              />
+            </svg>
+          </a>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .team .title {
+    color: #000;
+  }
+
+  .team__list {
+    margin-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    padding: 0;
+  }
+
+  @media (max-width: 768px) {
+    .team__list {
+      gap: 55px;
+    }
+  }
+
+  .team__item {
+    max-width: 200px;
+    width: 100%;
+    text-align: center;
+    justify-self: center;
+  }
+
+  .team__photo {
+    width: 100%;
+    height: 200px;
+    border-radius: 50%;
+  }
+
+  .team__name {
+    margin: 15px 0 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .team__info {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
+  .team__social {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    column-gap: 20px;
+  }
+</style>

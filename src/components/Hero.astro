@@ -1,0 +1,181 @@
+---
+// Hero component (Hero banner with background, promotion, and quick tour request)
+import beachBg from '../assets/images/beach-background.jpeg';
+import womanImg from '../assets/images/woman..jpeg';
+import arrowR from '../assets/images/arrow-r.svg';
+---
+
+<section
+  class="hero"
+  id="aboutTours"
+  style={`--hero-bg: url('${beachBg.src}'); --arrow-r: url('${arrowR.src}');`}
+>
+  <div class="container hero__container">
+    <div class="hero__content">
+      <h1 class="hero__title">
+        горящие туры по россии и всему земному шару!
+      </h1>
+      <p class="hero__description">
+        лечение в санаториях , отдых на море, активные и экскурсионные поездки, круизы - все для вас!
+      </p>
+    </div>
+
+    <div class="hero__selection">
+      <img
+        src={womanImg.src}
+        alt="бесплатный подбор выгодных туров"
+        width="260"
+        height="200"
+        loading="eager"
+      />
+      <p>бесплатный подбор выгодных туров</p>
+      <button class="hero__feedback-btn feedback-btn" type="button" aria-label="Заказать подбор тура">
+        Заказать
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    background: var(--hero-bg) center / cover no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 1100px;
+    padding-top: 190px;
+  }
+
+  @media (max-width: 1200px) {
+    .hero {
+      min-height: 1300px;
+      padding-top: 170px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .hero {
+      min-height: 1150px;
+      padding-top: 140px;
+    }
+  }
+
+  .hero__container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .hero__content {
+    flex: 1;
+  }
+
+  .hero__title {
+    color: rgb(255, 255, 255);
+    font-size: 72px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-shadow: 0 3px 4px rgba(0, 0, 0, 0.4);
+    max-width: 1050px;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .hero__description {
+    margin: 90px 0 0;
+    color: rgb(255, 255, 255);
+    font-size: 34px;
+    font-weight: 400;
+    text-transform: uppercase;
+    line-height: 1.25;
+  }
+
+  @media (max-width: 1024px) {
+    .hero__container {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .hero__title {
+      font-size: 48px;
+    }
+
+    .hero__description {
+      margin: 30px 0 0;
+      font-size: 24px;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .hero__title {
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .hero__description {
+      font-size: 18px;
+      text-align: center;
+    }
+  }
+
+  .hero__selection {
+    display: flex;
+    flex-direction: column;
+    border: 3px solid rgb(255, 255, 255);
+    border-radius: 30px;
+    padding: 20px;
+    max-width: 300px;
+    width: 100%;
+    backdrop-filter: blur(2px);
+    background: rgba(12, 38, 38, 0.15);
+  }
+
+  .hero__selection img {
+    border-radius: 20px;
+    object-fit: cover;
+    flex: 1;
+    max-height: 220px;
+    width: 100%;
+  }
+
+  .hero__selection p {
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 20px 0;
+  }
+
+  .hero__feedback-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    background: linear-gradient(154.93deg, rgb(222, 182, 90) 25.686%, rgb(165, 117, 7) 89.179%);
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 15px 20px;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .hero__feedback-btn:hover {
+    background: var(--link-hover);
+  }
+
+  .hero__feedback-btn:active {
+    outline: 1px solid rgb(255, 255, 255);
+    background: var(--link-active);
+  }
+
+  .hero__feedback-btn::after {
+    content: '';
+    background: var(--arrow-r) center / cover no-repeat;
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+</style>

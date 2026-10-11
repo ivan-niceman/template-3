@@ -1,0 +1,232 @@
+---
+import '../styles/normalize.css';
+import '../styles/global.css';
+
+import ModalForm from '../components/ModalForm.astro';
+import CookieBanner from '../components/CookieBanner.astro';
+import SocialFloating from '../components/SocialFloating.astro';
+import UpwardButton from '../components/UpwardButton.astro';
+import beachBg from '../assets/images/beach-background.jpeg';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+  withDefaultWidgets?: boolean;
+}
+
+const {
+  title = 'Горящие туры и круизы в Москве — Туристическое агентство | Подбор туров со скидками',
+  description = 'Бронирование горящих туров по России и миру со скидками до 30%, подбор круизов, авиабилетов и отелей. Офис продаж: г. Москва, ул. Ленина 19. Звоните: +7 (495) 777-33-41.',
+  noindex = false,
+  withDefaultWidgets = true,
+} = Astro.props;
+
+const canonicalUrl = Astro.url.href;
+const siteOrigin = Astro.url.origin;
+const robotsDirective = noindex
+  ? 'noindex, nofollow'
+  : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+
+// Schema.org JSON-LD graph for TravelAgency and WebSite (Local SEO & GEO)
+const schemaData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'TravelAgency',
+      '@id': `${siteOrigin}/#agency`,
+      'name': 'Горящие туры и круизы',
+      'alternateName': 'Турагентство «Горящие туры и круизы» Москва',
+      'url': siteOrigin,
+      'logo': `${siteOrigin}/favicon.svg`,
+      'image': `${siteOrigin}/images/beach-background.jpeg`,
+      'description': description,
+      'telephone': '+7 (495) 777-33-41',
+      'email': 'client@example.ru',
+      'priceRange': '₽₽',
+      'currenciesAccepted': 'RUB, EUR, USD',
+      'paymentAccepted': 'Банковские карты, безналичный расчет, наличные',
+      'address': {
+        '@type': 'PostalAddress',
+        'streetAddress': 'ул. Ленина 19, офис 301',
+        'addressLocality': 'Москва',
+        'addressRegion': 'Москва',
+        'postalCode': '101000',
+        'addressCountry': 'RU',
+      },
+      'geo': {
+        '@type': 'GeoCoordinates',
+        'latitude': 55.7558,
+        'longitude': 37.6173,
+      },
+      'openingHoursSpecification': [
+        {
+          '@type': 'OpeningHoursSpecification',
+          'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          'opens': '09:00',
+          'closes': '19:00',
+        },
+      ],
+      'areaServed': [
+        {
+          '@type': 'City',
+          'name': 'Москва',
+        },
+        {
+          '@type': 'Country',
+          'name': 'Россия',
+        },
+      ],
+      'hasOfferCatalog': {
+        '@type': 'OfferCatalog',
+        'name': 'Туристические услуги и направления',
+        'itemListElement': [
+          {
+            '@type': 'Offer',
+            'itemOffered': {
+              '@type': 'Service',
+              'name': 'Горящие пляжные туры по России и миру',
+              'description': 'Выгодные путевки в Турцию, ОАЭ, Египет, Мальдивы, Таиланд и Сочи.',
+            },
+          },
+          {
+            '@type': 'Offer',
+            'itemOffered': {
+              '@type': 'Service',
+              'name': 'Морские и речные круизы',
+              'description': 'Бронирование круизов по рекам России и международным морским маршрутам.',
+            },
+          },
+          {
+            '@type': 'Offer',
+            'itemOffered': {
+              '@type': 'Service',
+              'name': 'Бронирование отелей, санаториев и пансионатов',
+            },
+          },
+          {
+            '@type': 'Offer',
+            'itemOffered': {
+              '@type': 'Service',
+              'name': 'Авиабилеты, трансферы и визовая поддержка',
+            },
+          },
+        ],
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteOrigin}/#website`,
+      'url': siteOrigin,
+      'name': 'Горящие туры и круизы',
+      'inLanguage': 'ru-RU',
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang="ru" prefix="og: https://ogp.me/ns#">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Safe fetch getter/setter polyfill & extension error handler -->
+    <script is:inline>
+      (function () {
+        try {
+          var originalFetch = window.fetch;
+          var fetchRef = typeof originalFetch === 'function' ? originalFetch.bind(window) : originalFetch;
+          Object.defineProperty(window, 'fetch', {
+            configurable: true,
+            enumerable: true,
+            get: function () {
+              return fetchRef;
+            },
+            set: function (newFetch) {
+              fetchRef = newFetch;
+            },
+          });
+        } catch (_) {}
+
+        window.addEventListener(
+          'error',
+          function (event) {
+            if (
+              (event.filename && event.filename.indexOf('chrome-extension://') !== -1) ||
+              (event.message && event.message.indexOf('Cannot set property fetch') !== -1)
+            ) {
+              if (event.preventDefault) event.preventDefault();
+              if (event.stopPropagation) event.stopPropagation();
+              return true;
+            }
+          },
+          true
+        );
+      })();
+    </script>
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robotsDirective} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- GEO / Local SEO Targeting (Яндекс, Google, Карты) -->
+    <meta name="geo.region" content="RU-MOW" />
+    <meta name="geo.placename" content="Москва, Россия" />
+    <meta name="geo.position" content="55.7558;37.6173" />
+    <meta name="ICBM" content="55.7558, 37.6173" />
+
+    <!-- Open Graph (Facebook, VK, Telegram, Мессенджеры) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:site_name" content="Горящие туры и круизы" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={`${siteOrigin}/images/beach-background.jpeg`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Горящие туры и круизы по России и миру" />
+
+    <!-- Open Graph Business / GEO -->
+    <meta property="business:contact_data:street_address" content="ул. Ленина 19, офис 301" />
+    <meta property="business:contact_data:locality" content="Москва" />
+    <meta property="business:contact_data:region" content="Москва" />
+    <meta property="business:contact_data:postal_code" content="101000" />
+    <meta property="business:contact_data:country_name" content="Россия" />
+    <meta property="business:contact_data:phone_number" content="+74957773341" />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteOrigin}/images/beach-background.jpeg`} />
+
+    <!-- Fonts Preconnect & Optimized Subset -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+    />
+
+    <!-- Preload Hero Background Image for Faster LCP -->
+    <link rel="preload" as="image" href={beachBg.src} fetchpriority="high" />
+
+    <!-- Favicons & Mobile Manifest -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <meta name="theme-color" content="#0c2626" />
+
+    <!-- Schema.org Microdata (JSON-LD) -->
+    <script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+
+    <!-- Cruise Widget Stylesheet (Non-blocking) -->
+    <link rel="stylesheet" href="https://widget.gocruise.ru/css/app.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://widget.gocruise.ru/css/app.css" /></noscript>
+  </head>
+  <body class="page">
+    <slot />
+  </body>
+</html>

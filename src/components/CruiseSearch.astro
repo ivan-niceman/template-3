@@ -1,0 +1,40 @@
+---
+// CruiseSearch component with GoCruise widget integration
+---
+
+<section class="cruises" id="cruises">
+  <div class="container">
+    <h2 class="title">Поиск круиза</h2>
+    <div class="cruises__widget">
+      <div id="ces"></div>
+      <script is:inline>
+        window.cesSettings = {
+          email: 'client@example.ru',
+          currencies: ['EUR', 'RUB'],
+        };
+      </script>
+      <script is:inline src="https://widget.gocruise.ru/js/app.js"></script>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cruises {
+    margin-top: 5px;
+    padding: 50px 0;
+    background: var(--link-active);
+  }
+
+  .cruises .title {
+    padding: 0;
+  }
+
+  .cruises__widget {
+    margin-top: 50px;
+  }
+  @media(max-width: 500px) {
+      .cruises .container {
+    padding-inline: 0;
+  }
+  }
+</style>

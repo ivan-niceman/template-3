@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "web site",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -9,9 +9,26 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "start": "node ./dist/server/entry.mjs",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "astro": "^7.3.8"
+    "@astrojs/node": "^11.1.7",
+    "@astrojs/vercel": "^11.0.13",
+    "@google/genai": "^2.4.0",
+    "astro": "^7.3.8",
+    "astro-purgecss": "^7.0.0",
+    "dotenv": "^17.2.3",
+    "nodemailer": "^10.0.16",
+    "purgecss": "^8.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^22.14.0",
+    "@types/nodemailer": "^8.0.2",
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.29",
+    "typescript": "^6.0.3"
   }
 }

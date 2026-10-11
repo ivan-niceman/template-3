@@ -1,0 +1,171 @@
+---
+---
+
+<div
+  class="social-button"
+  id="floatingMessengers"
+>
+  <input
+    type="checkbox"
+    class="social-open"
+    name="social-open"
+    id="social-open"
+  />
+  <label class="social-open-button" for="social-open" aria-label="Открыть мессенджеры">
+    <span></span>
+  </label>
+  <a href="https://t.me/" class="social-link telegram" title="Telegram" target="_blank" rel="noopener noreferrer" aria-label="Telegram"></a>
+  <a href="https://wa.me/" class="social-link whatsapp" title="WhatsApp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"></a>
+  <a href="https://vk.com/" class="social-link vkontakte" title="VK" target="_blank" rel="noopener noreferrer" aria-label="VKontakte"></a>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const messengersBtn = document.getElementById('floatingMessengers');
+    const headerSocial = document.querySelector('.header .social') as HTMLElement | null;
+    const footer = document.querySelector('footer');
+
+    if (!messengersBtn) return;
+
+    function checkMessengerVisibility(): void {
+      if (!messengersBtn) return;
+
+      // 1. Detect if messengers in the header are visible in current viewport
+      let isHeaderSocialVisible = false;
+      if (headerSocial) {
+        const isDisplayNone = window.getComputedStyle(headerSocial).display === 'none';
+        const rect = headerSocial.getBoundingClientRect();
+        isHeaderSocialVisible = !isDisplayNone && rect.bottom > 0 && rect.top < window.innerHeight;
+      }
+
+      // Show floating button whenever header social is hidden (e.g. mobile) or scrolled away
+      if (!isHeaderSocialVisible) {
+        messengersBtn.style.display = 'block';
+      } else {
+        messengersBtn.style.display = 'none';
+      }
+
+      // 2. Adjust position when near footer so it never disappears and neatly hovers above footer
+      if (footer) {
+        const footerRect = footer.getBoundingClientRect();
+        if (footerRect.top <= window.innerHeight) {
+          messengersBtn.style.bottom = `${window.innerHeight - footerRect.top + 25}px`;
+        } else {
+          messengersBtn.style.bottom = '25px';
+        }
+      }
+    }
+
+    window.addEventListener('scroll', checkMessengerVisibility, { passive: true });
+    window.addEventListener('resize', checkMessengerVisibility, { passive: true });
+    checkMessengerVisibility();
+  });
+</script>
+
+<style>
+  .social-button {
+    position: fixed;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    right: 25px;
+    z-index: 90;
+  }
+
+  @media(max-width: 500px) {
+    .social-button {
+      right: 10px;
+    }
+  }
+
+  .social-open {
+    display: none;
+  }
+
+  .social-open-button > span {
+    position: absolute;
+    background: url("../assets/images/icons/message.svg") center / contain no-repeat;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .social-open-button::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    border: 1px solid #0c2626;
+    border-radius: 50%;
+    width: 46px;
+    height: 46px;
+    animation: wave 7s infinite ease-in;
+  }
+
+  @keyframes wave {
+    0%,
+    80% {
+      opacity: 1;
+      transform: scale(0.6);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(1.6);
+    }
+  }
+
+  .social-open-button > span:hover {
+    box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.4);
+  }
+
+  .social-open:checked + .social-open-button > span {
+    transform: scale(0.9);
+  }
+
+  .social-open:checked + .social-open-button::before {
+    animation: none;
+  }
+
+  .social-link {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    right: 3px;
+    top: 3px;
+    display: block;
+    border-radius: 50%;
+    transition: 0.3s;
+  }
+
+  .social-link:hover {
+    box-shadow: 0 0 8px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .social-link.telegram {
+    background: url("../assets/images/icons/telegram-1.svg") center / contain no-repeat;
+  }
+
+  .social-link.whatsapp {
+    background: url("../assets/images/icons/whatsapp-1.svg") center / contain no-repeat;
+  }
+
+  .social-link.vkontakte {
+    background: url("../assets/images/icons/vk.svg") center / contain no-repeat;
+  }
+
+  .social-open:checked ~ .social-link.telegram {
+    transform: translateY(-115%);
+  }
+
+  .social-open:checked ~ .social-link.whatsapp {
+    transform: translateY(-225%);
+  }
+
+  .social-open:checked ~ .social-link.vkontakte {
+    transform: translateY(-335%);
+  }
+</style>

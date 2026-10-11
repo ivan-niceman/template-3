@@ -1,0 +1,357 @@
+---
+import feedback1 from '../assets/images/feedback/feedback-1.jpeg';
+import feedback2 from '../assets/images/feedback/feedback-2.jpeg';
+import arrowSlide from '../assets/images/arrow-slide.svg';
+
+const reviews = [
+  {
+    name: 'Наталья М.',
+    date: 'октябрь 2023',
+    photo: feedback1.src,
+    text: 'Летали в Турцию от Натальи, подобрала классный отель, поймали хорошую цену за счет покупки заранее по акции. Отель 5* в Кемере, Barut, питание шикарное, пляж с прозрачной водой, в конце октября было еще тепло',
+  },
+  {
+    name: 'Александра Д.',
+    date: 'октябрь 2023',
+    photo: feedback2.src,
+    text: 'Отпуск дали внезапно, мне не хотелось сидеть дома, подумала вдруг есть горящие? Все-таки высокий сезон, сомневалась, но девочки подобрали мне классный тур в Бодрум! Я там и накупалась и натанцевалась!',
+  },
+  {
+    name: 'Екатерина В.',
+    date: 'ноябрь 2023',
+    photo: feedback1.src,
+    text: 'Летали в Турцию от Натальи, подобрала классный отель, поймали хорошую цену за счет покупки заранее по акции. Отель 5* в Кемере, Barut, питание шикарное, пляж с прозрачной водой, в конце октября было еще тепло',
+  },
+];
+---
+
+<section
+  class="feedback container"
+  id="feedback"
+  style={`--arrow-slide: url('${arrowSlide.src}');`}
+>
+  <h2 class="title">отзывы наших туристов</h2>
+  <div class="feedback__slider-wrapper">
+    <button class="slick-arrow slick-prev" id="feedbackPrev" type="button" aria-label="Предыдущий отзыв"></button>
+
+    <div
+      class="feedback__slider"
+      id="feedbackSlider"
+      role="region"
+      aria-label="Слайдер отзывов туристов"
+      tabindex="0"
+    >
+      <div class="feedback__track" id="feedbackTrack">
+        {reviews.map((rev) => (
+          <div class="feedback__slide">
+            <div class="feedback__card">
+              <div class="feedback__client">
+                <img
+                  src={rev.photo}
+                  alt={rev.name}
+                  class="feedback__photo"
+                  loading="lazy"
+                  width="50"
+                  height="50"
+                />
+                <div class="feedback__info">
+                  <p class="feedback__name">{rev.name}</p>
+                  <p class="feedback__date">{rev.date}</p>
+                </div>
+              </div>
+              <p class="feedback__description">{rev.text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <button class="slick-arrow slick-next" id="feedbackNext" type="button" aria-label="Следующий отзыв"></button>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const track = document.getElementById('feedbackTrack');
+    const prevBtn = document.getElementById('feedbackPrev');
+    const nextBtn = document.getElementById('feedbackNext');
+    const viewport = document.getElementById('feedbackSlider');
+
+    if (!track || !prevBtn || !nextBtn || !viewport) return;
+
+    const sliderTrack: HTMLElement = track;
+    let isAnimating = false;
+
+    // Calculate dynamic slide width + gap for accurate sliding on all screen sizes
+    function getSlideStep(): number {
+      const slide = sliderTrack.querySelector('.feedback__slide') as HTMLElement | null;
+      if (!slide) return 320;
+      const style = window.getComputedStyle(sliderTrack);
+      const gap = parseFloat(style.columnGap || style.gap || '20') || 20;
+      return slide.getBoundingClientRect().width + gap;
+    }
+
+    function slideNext(): void {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      const step = getSlideStep();
+      sliderTrack.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+      sliderTrack.style.transform = `translateX(-${step}px)`;
+
+      const onEnd = (): void => {
+        sliderTrack.removeEventListener('transitionend', onEnd);
+        sliderTrack.style.transition = 'none';
+        const first = sliderTrack.firstElementChild;
+        if (first) {
+          sliderTrack.appendChild(first);
+        }
+        sliderTrack.style.transform = 'translateX(0)';
+        // Force reflow
+        void sliderTrack.offsetWidth;
+        isAnimating = false;
+      };
+
+      sliderTrack.addEventListener('transitionend', onEnd, { once: true });
+    }
+
+    function slidePrev(): void {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      const step = getSlideStep();
+      // Move last item to start before sliding into view
+      const last = sliderTrack.lastElementChild;
+      const first = sliderTrack.firstElementChild;
+      if (last) {
+        sliderTrack.insertBefore(last, first);
+      }
+      sliderTrack.style.transition = 'none';
+      sliderTrack.style.transform = `translateX(-${step}px)`;
+      // Force reflow
+      void sliderTrack.offsetWidth;
+
+      // Animate smoothly to 0
+      sliderTrack.style.transition = 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)';
+      sliderTrack.style.transform = 'translateX(0)';
+
+      const onEnd = (): void => {
+        sliderTrack.removeEventListener('transitionend', onEnd);
+        sliderTrack.style.transition = 'none';
+        isAnimating = false;
+      };
+
+      sliderTrack.addEventListener('transitionend', onEnd, { once: true });
+    }
+
+    nextBtn.addEventListener('click', slideNext);
+    prevBtn.addEventListener('click', slidePrev);
+
+    // Touch swipe support for mobile devices
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let isSwiping = false;
+
+    viewport.addEventListener(
+      'touchstart',
+      (e) => {
+        if (e.touches.length === 1) {
+          touchStartX = e.touches[0].clientX;
+          touchEndX = touchStartX;
+          isSwiping = true;
+        }
+      },
+      { passive: true }
+    );
+
+    viewport.addEventListener(
+      'touchmove',
+      (e) => {
+        if (isSwiping && e.touches.length === 1) {
+          touchEndX = e.touches[0].clientX;
+        }
+      },
+      { passive: true }
+    );
+
+    viewport.addEventListener(
+      'touchend',
+      () => {
+        if (!isSwiping) return;
+        isSwiping = false;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 40) {
+          if (diff > 0) {
+            slideNext();
+          } else {
+            slidePrev();
+          }
+        }
+      },
+      { passive: true }
+    );
+
+    // Keyboard navigation (Left / Right arrows)
+    viewport.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        slideNext();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        slidePrev();
+      }
+    });
+  });
+</script>
+
+<style>
+  .feedback .title {
+    color: #000;
+  }
+
+  .feedback__slider-wrapper {
+    position: relative;
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .feedback__slider {
+    width: 100%;
+    overflow: hidden;
+    padding: 10px 0;
+    outline: none;
+    user-select: none;
+  }
+
+  .feedback__slider:focus-visible {
+    border-radius: 20px;
+    box-shadow: 0 0 0 2px var(--link-hover);
+  }
+
+  .feedback__track {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    align-items: stretch;
+    will-change: transform;
+  }
+
+  .feedback__slide {
+    flex: 0 0 calc(50% - 10px);
+    min-width: calc(50% - 10px);
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 768px) {
+    .feedback__slide {
+      flex: 0 0 100%;
+      min-width: 100%;
+    }
+  }
+
+  .feedback__card {
+    display: grid;
+    grid-template-columns: max-content minmax(260px, 1fr);
+    gap: 20px 30px;
+    border-radius: 30px;
+    background: var(--link-active);
+    padding: 24px;
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 1250px) {
+    .feedback__card {
+      grid-template-columns: 1fr;
+      grid-template-rows: min-content;
+    }
+  }
+
+  .feedback__client {
+    display: flex;
+    align-items: center;
+    column-gap: 12px;
+  }
+
+  .feedback__photo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .feedback__info {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+  }
+
+  .feedback__name {
+    color: #fff;
+    background-image: linear-gradient(154.93deg, rgb(222, 182, 90), rgb(165, 117, 7), rgb(165, 117, 7));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .feedback__date {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .feedback__description {
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18px;
+    margin: 0;
+  }
+
+  .slick-arrow {
+    background: var(--arrow-slide) center no-repeat;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .slick-arrow:hover {
+    transform: scale(1.08);
+  }
+
+  .slick-prev {
+    transform: rotate(180deg);
+  }
+
+  .slick-prev:hover {
+    transform: rotate(180deg) scale(1.08);
+  }
+
+  @media (max-width: 600px) {
+    .feedback__slider-wrapper {
+      padding-bottom: 60px;
+    }
+
+    .slick-arrow {
+      position: absolute;
+      bottom: 5px;
+    }
+
+    .slick-prev {
+      left: 30%;
+    }
+
+    .slick-next {
+      right: 30%;
+    }
+  }
+</style>

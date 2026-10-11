@@ -1,0 +1,767 @@
+<div class="popup__form-content" id="leadModal" role="dialog" aria-modal="true" aria-labelledby="leadModalTitle" tabindex="-1">
+  <div class="popup__form-block">
+    <button class="close-popup" id="closeModalBtn" type="button" aria-label="Закрыть окно">
+      <span></span>
+      <span></span>
+    </button>
+    <h2 class="popup__form-title form-title" id="leadModalTitle">
+      подбор лучших туров для вас
+    </h2>
+
+    <form method="POST" class="form popup__form" id="leadForm" novalidate>
+      <!-- Anti-Bot Honeypot -->
+      <div class="honeypot-field" aria-hidden="true">
+        <input type="text" name="website" id="leadWebsiteHoneypot" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <!-- Name Field with Floating Label -->
+      <div class="form-field" id="fieldNameWrapper">
+        <input
+          type="text"
+          id="leadName"
+          name="name"
+          placeholder=" "
+          required
+          autocomplete="name"
+        />
+        <label for="leadName" class="form-field__label">Имя</label>
+        <span class="form-field__error" id="nameError">Пожалуйста, укажите имя</span>
+      </div>
+
+      <!-- Phone Field with Floating Label and RU Mask -->
+      <div class="form-field" id="fieldPhoneWrapper">
+        <input
+          type="tel"
+          id="leadPhone"
+          name="tel"
+          placeholder=" "
+          required
+          autocomplete="tel"
+          inputmode="tel"
+        />
+        <label for="leadPhone" class="form-field__label">Номер телефона</label>
+        <span class="form-field__error" id="phoneError">Укажите номер телефона/ Пример: +7 (999) 999-99-99</span>
+      </div>
+
+      <!-- Email Field with Floating Label and Anti-Spam Validation (Required) -->
+      <div class="form-field" id="fieldEmailWrapper">
+        <input
+          type="email"
+          id="leadEmail"
+          name="email"
+          placeholder=" "
+          required
+          autocomplete="email"
+        />
+        <label for="leadEmail" class="form-field__label">Электронная почта</label>
+        <span class="form-field__error" id="emailError">Пожалуйста, укажите адрес электронной почты</span>
+      </div>
+
+      <!-- Message Field with Floating Label (Required) -->
+      <div class="form-field" id="fieldMessageWrapper">
+        <textarea
+          id="leadMessage"
+          name="message"
+          placeholder=" "
+          required
+          rows="3"
+        ></textarea>
+        <label for="leadMessage" class="form-field__label">Сообщение</label>
+        <span class="form-field__error" id="messageError">Пожалуйста, укажите ваши пожелания к туру</span>
+      </div>
+
+      <!-- Submit Section -->
+      <div class="popup-send-form-block">
+        <button type="submit" class="popup-form__btn" id="leadSubmitBtn">
+          <span class="btn-spinner" id="btnSpinner" style="display: none;" aria-hidden="true"></span>
+          <span id="btnText">Отправить</span>
+        </button>
+        <p class="popup-form__paragraph">
+          Нажимая на кнопку, вы даете согласие, что ознакомлены с {}
+          <a href="/privacy" class="privacy" target="_blank" rel="noreferrer">политикой конфиденциальности</a> {}
+          и согласны на <a href="/consent" class="privacy" target="_blank" rel="noreferrer">обработку персональных данных</a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Success Message Modal -->
+<div class="form__message" id="successModal" role="dialog" aria-modal="true" aria-labelledby="successModalTitle" tabindex="-1">
+  <div class="form__message-block">
+    <button class="message-close-popup" id="closeSuccessBtn" type="button" aria-label="Закрыть сообщение">
+      <span></span>
+      <span></span>
+    </button>
+    <div style="font-size: 48px; margin-bottom: 15px;">🌴</div>
+    <h2 class="form__message-title" id="successModalTitle">Спасибо!</h2>
+    <p class="form__message-text" id="successMessageText">
+      Спасибо, что оставили заявку!<br />Мы скоро с вами свяжемся.
+    </p>
+  </div>
+</div>
+
+<script>
+  // Pure JavaScript Client-side Modal and Form Controller
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('leadModal') as HTMLElement | null;
+    const form = document.getElementById('leadForm') as HTMLFormElement | null;
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const submitBtn = document.getElementById('leadSubmitBtn') as HTMLButtonElement | null;
+    const btnSpinner = document.getElementById('btnSpinner') as HTMLElement | null;
+    const btnText = document.getElementById('btnText') as HTMLElement | null;
+
+    const successModal = document.getElementById('successModal') as HTMLElement | null;
+    const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+
+    const nameInput = document.getElementById('leadName') as HTMLInputElement | null;
+    const phoneInput = document.getElementById('leadPhone') as HTMLInputElement | null;
+    const emailInput = document.getElementById('leadEmail') as HTMLInputElement | null;
+    const messageInput = document.getElementById('leadMessage') as HTMLTextAreaElement | null;
+    const honeypotInput = document.getElementById('leadWebsiteHoneypot') as HTMLInputElement | null;
+
+    const nameWrapper = document.getElementById('fieldNameWrapper');
+    const phoneWrapper = document.getElementById('fieldPhoneWrapper');
+    const emailWrapper = document.getElementById('fieldEmailWrapper');
+    const messageWrapper = document.getElementById('fieldMessageWrapper');
+
+    const nameError = document.getElementById('nameError');
+    const phoneError = document.getElementById('phoneError');
+    const emailError = document.getElementById('emailError');
+    const messageError = document.getElementById('messageError');
+
+    const DISPOSABLE_EMAIL_DOMAINS = [
+      'mailinator.com',
+      'tempmail.com',
+      '10minutemail.com',
+      'guerrillamail.com',
+      'sharklasers.com',
+      'trashmail.com',
+      'yopmail.com',
+      'fakeinbox.com',
+      'getairmail.com',
+      'dispostable.com',
+      'temp-mail.org',
+      'generator.email',
+      'burnermail.io',
+      'dropmail.me',
+      'mohmal.com',
+    ];
+
+    let successTimer: number | null = null;
+    let hasSubmitted = false;
+
+    if (!modal || !form || !nameInput || !phoneInput || !emailInput || !messageInput) return;
+
+    function clearAllErrors() {
+      nameWrapper?.classList.remove('has-error');
+      phoneWrapper?.classList.remove('has-error');
+      emailWrapper?.classList.remove('has-error');
+      messageWrapper?.classList.remove('has-error');
+    }
+
+    // Helper: Lock body scroll
+    function lockScroll() {
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.classList.add('body-hidden');
+      document.body.style.paddingRight = `${scrollBarWidth}px`;
+    }
+
+    // Helper: Unlock body scroll
+    function unlockScroll() {
+      const isAnyModalActive =
+        modal?.classList.contains('popup__form_active') ||
+        successModal?.classList.contains('form__message_active');
+      if (!isAnyModalActive) {
+        document.body.classList.remove('body-hidden');
+        document.body.style.paddingRight = '';
+      }
+    }
+
+    // Modal Open function
+    function openModal() {
+      modal?.classList.add('popup__form_active');
+      lockScroll();
+      hasSubmitted = false;
+      clearAllErrors();
+      setTimeout(() => nameInput?.focus(), 150);
+    }
+
+    function closeModal() {
+      modal?.classList.remove('popup__form_active');
+      unlockScroll();
+      hasSubmitted = false;
+      clearAllErrors();
+    }
+
+    function openSuccess() {
+      closeModal();
+      successModal?.classList.add('form__message_active');
+      lockScroll();
+      if (successTimer) clearTimeout(successTimer);
+      successTimer = window.setTimeout(() => {
+        closeSuccess();
+      }, 5000);
+    }
+
+    function closeSuccess() {
+      successModal?.classList.remove('form__message_active');
+      unlockScroll();
+      if (successTimer) {
+        clearTimeout(successTimer);
+        successTimer = null;
+      }
+    }
+
+    // Listen to all buttons with .feedback-btn
+    document.querySelectorAll('.feedback-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal();
+      });
+    });
+
+    closeModalBtn?.addEventListener('click', closeModal);
+    closeSuccessBtn?.addEventListener('click', closeSuccess);
+
+    // Close on backdrop click
+    modal.addEventListener('click', (e) => {
+      const modalBlock = modal.querySelector('.popup__form-block');
+      if (modalBlock && !modalBlock.contains(e.target as Node)) {
+        closeModal();
+      }
+    });
+
+    successModal?.addEventListener('click', (e) => {
+      const block = successModal.querySelector('.form__message-block');
+      if (block && !block.contains(e.target as Node)) {
+        closeSuccess();
+      }
+    });
+
+    // Close on Escape key
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (modal.classList.contains('popup__form_active')) closeModal();
+        if (successModal?.classList.contains('form__message_active')) closeSuccess();
+      }
+    });
+
+    // --- RU Phone Mask Implementation ---
+    function formatRussianPhoneNumber(input: HTMLInputElement, isBackspace: boolean) {
+      let digits = input.value.replace(/\D/g, '');
+
+      if (!digits) {
+        input.value = '';
+        return;
+      }
+
+      // If user typed 8 or 7 as first digit, replace with 7
+      if (['7', '8', '9'].includes(digits[0])) {
+        if (digits[0] === '9') digits = '79' + digits.slice(1);
+        else digits = '7' + digits.slice(1);
+      } else {
+        digits = '7' + digits;
+      }
+
+      // Trim to max 11 digits
+      digits = digits.substring(0, 11);
+
+      let formatted = '+7';
+      if (digits.length > 1) {
+        formatted += ' (' + digits.substring(1, 4);
+      }
+      if (digits.length >= 5) {
+        formatted += ') ' + digits.substring(4, 7);
+      }
+      if (digits.length >= 8) {
+        formatted += '-' + digits.substring(7, 9);
+      }
+      if (digits.length >= 10) {
+        formatted += '-' + digits.substring(9, 11);
+      }
+
+      input.value = formatted;
+    }
+
+    let isBackspaceKey = false;
+    phoneInput.addEventListener('keydown', (e) => {
+      isBackspaceKey = e.key === 'Backspace' || e.key === 'Delete';
+    });
+
+    phoneInput.addEventListener('input', () => {
+      formatRussianPhoneNumber(phoneInput, isBackspaceKey);
+      if (hasSubmitted) {
+        validatePhone();
+      }
+    });
+
+    phoneInput.addEventListener('paste', () => {
+      setTimeout(() => {
+        formatRussianPhoneNumber(phoneInput, false);
+        if (hasSubmitted) {
+          validatePhone();
+        }
+      }, 0);
+    });
+
+    // --- Validation Functions (activated upon submit) ---
+    function validateName(): boolean {
+      const val = nameInput?.value.trim() || '';
+      if (val.length < 2) {
+        nameWrapper?.classList.add('has-error');
+        if (nameError) nameError.textContent = 'Имя должно содержать не менее 2 символов';
+        return false;
+      }
+      nameWrapper?.classList.remove('has-error');
+      return true;
+    }
+
+    function validatePhone(): boolean {
+      const digits = phoneInput?.value.replace(/\D/g, '') || '';
+      if (digits.length < 11) {
+        phoneWrapper?.classList.add('has-error');
+        if (phoneError) phoneError.textContent = 'Укажите полный номер (+7 (999) 999-99-99)';
+        return false;
+      }
+      phoneWrapper?.classList.remove('has-error');
+      return true;
+    }
+
+    function validateEmail(): boolean {
+      const val = emailInput?.value.trim() || '';
+      if (!val) {
+        emailWrapper?.classList.add('has-error');
+        if (emailError) emailError.textContent = 'Пожалуйста, укажите адрес электронной почты';
+        return false;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(val)) {
+        emailWrapper?.classList.add('has-error');
+        if (emailError) emailError.textContent = 'Введите корректный e-mail (например: name@domain.ru)';
+        return false;
+      }
+
+      const domain = val.split('@')[1]?.toLowerCase();
+      if (domain && DISPOSABLE_EMAIL_DOMAINS.includes(domain)) {
+        emailWrapper?.classList.add('has-error');
+        if (emailError) emailError.textContent = 'Использование временных e-mail адресов запрещено';
+        return false;
+      }
+
+      emailWrapper?.classList.remove('has-error');
+      return true;
+    }
+
+    function validateMessage(): boolean {
+      const val = messageInput?.value.trim() || '';
+      if (!val || val.length < 5) {
+        messageWrapper?.classList.add('has-error');
+        if (messageError) messageError.textContent = 'Пожалуйста, опишите пожелания к туру (минимум 5 символов)';
+        return false;
+      }
+
+      // Anti-spam link check
+      const linkMatches = val.match(/https?:\/\//gi) || [];
+      if (linkMatches.length > 2) {
+        messageWrapper?.classList.add('has-error');
+        if (messageError) messageError.textContent = 'Сообщение содержит слишком много ссылок';
+        return false;
+      }
+
+      messageWrapper?.classList.remove('has-error');
+      return true;
+    }
+
+    // Dynamic re-validation while correcting fields AFTER submit attempt
+    nameInput.addEventListener('input', () => {
+      if (hasSubmitted) validateName();
+    });
+
+    emailInput.addEventListener('input', () => {
+      if (hasSubmitted) validateEmail();
+    });
+
+    messageInput.addEventListener('input', () => {
+      if (hasSubmitted) validateMessage();
+    });
+
+    // --- Form Submit Handler ---
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      hasSubmitted = true;
+
+      const isNameOk = validateName();
+      const isPhoneOk = validatePhone();
+      const isEmailOk = validateEmail();
+      const isMessageOk = validateMessage();
+
+      if (!isNameOk || !isPhoneOk || !isEmailOk || !isMessageOk) {
+        if (!isNameOk) nameInput.focus();
+        else if (!isPhoneOk) phoneInput.focus();
+        else if (!isEmailOk) emailInput.focus();
+        else if (!isMessageOk) messageInput.focus();
+        return;
+      }
+
+      // Set Loading State
+      if (submitBtn) submitBtn.disabled = true;
+      if (btnSpinner) btnSpinner.style.display = 'inline-block';
+      if (btnText) btnText.textContent = 'Отправка...';
+
+      const payload = {
+        name: nameInput.value.trim(),
+        tel: phoneInput.value.trim(),
+        email: emailInput.value.trim(),
+        message: messageInput.value.trim(),
+        website: honeypotInput?.value || '',
+      };
+
+      try {
+        const response = await fetch('/api/lead', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.ok) {
+          form.reset();
+          hasSubmitted = false;
+          clearAllErrors();
+          openSuccess();
+        } else {
+          alert(data.error || 'Произошла ошибка при отправке заявки.');
+        }
+      } catch (err) {
+        console.error('Fetch error:', err);
+        alert('Ошибка связи с сервером. Пожалуйста, проверьте интернет-соединение.');
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+        if (btnSpinner) btnSpinner.style.display = 'none';
+        if (btnText) btnText.textContent = 'Отправить';
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Floating labels and Modern Modal Styles */
+  .popup__form-content {
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    cursor: pointer;
+    padding: 20px;
+  }
+
+  .popup__form_active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .close-popup,
+  .message-close-popup {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border: none;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    background: transparent;
+    padding: 0;
+    z-index: 10;
+  }
+
+  .close-popup > span,
+  .message-close-popup > span {
+    position: absolute;
+    left: 0;
+    top: 13px;
+    background: linear-gradient(154.93deg, rgb(222, 182, 90) 25.686%, rgb(165, 117, 7) 89.179%);
+    height: 2px;
+    width: 100%;
+  }
+
+  .close-popup > span:first-of-type,
+  .message-close-popup > span:first-of-type {
+    transform: rotate(45deg);
+  }
+
+  .close-popup > span:last-of-type,
+  .message-close-popup > span:last-of-type {
+    transform: rotate(-45deg);
+  }
+
+  .popup__form-block {
+    position: relative;
+    max-width: 600px;
+    width: 100%;
+    max-height: 100%;
+    background-color: #fff;
+    border-radius: 24px;
+    padding: 60px 45px 40px;
+    text-align: center;
+    overflow-y: auto;
+    cursor: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    animation: modalPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes modalPopIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  @media(max-width: 500px) {
+    .popup__form-block {
+      padding: 40px 20px 30px;
+    }
+  }
+
+  .form-title {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 30px;
+    text-transform: uppercase;
+    max-width: 380px;
+    width: 100%;
+    margin: 0 auto;
+    color: #0c2626;
+  }
+
+  .popup__form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 35px auto 0;
+  }
+
+  /* Floating Label Fields */
+  .form-field {
+    position: relative;
+    width: 100%;
+    /* margin-bottom: 24px; */
+  }
+
+  .form-field input,
+  .form-field textarea {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #cbd5e1;
+    padding: 14px 4px 6px;
+    font-family: "Inter", "Roboto", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #0f172a;
+    background: transparent;
+    outline: none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .form-field textarea {
+    resize: vertical;
+    min-height: 70px;
+    padding-top: 18px;
+  }
+
+  .form-field input:focus,
+  .form-field textarea:focus {
+    border-bottom: 2px solid #deae46;
+  }
+
+  .form-field__label {
+    position: absolute;
+    left: 4px;
+    top: 14px;
+    color: #64748b;
+    font-size: 16px;
+    font-weight: 500;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .form-field input:focus ~ .form-field__label,
+  .form-field input:not(:placeholder-shown) ~ .form-field__label,
+  .form-field textarea:focus ~ .form-field__label,
+  .form-field textarea:not(:placeholder-shown) ~ .form-field__label {
+    top: -8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #a57507;
+    letter-spacing: 0.5px;
+  }
+
+  .form-field__error {
+    display: block;
+    font-size: 12px;
+    color: #dc2626;
+    margin-top: 4px;
+    min-height: 16px;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: all 0.2s ease;
+  }
+
+  .form-field.has-error input,
+  .form-field.has-error textarea {
+    border-bottom-color: #dc2626 !important;
+  }
+
+  .form-field.has-error .form-field__label {
+    color: #dc2626 !important;
+  }
+
+  .form-field.has-error .form-field__error {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Honeypot hidden input */
+  .honeypot-field {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 0;
+    width: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .popup-send-form-block {
+    width: 100%;
+  }
+
+  .popup-form__btn {
+    max-width: 260px;
+    width: 100%;
+    margin: 20px auto 0;
+    border-radius: 30px;
+    padding: 16px 24px;
+    color: #fff;
+    background: linear-gradient(154.93deg, rgb(222, 182, 90) 25.686%, rgb(165, 117, 7) 89.179%);
+    font-size: 18px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .popup-form__btn:hover:not(:disabled) {
+    background: var(--link-hover);
+    transform: translateY(-1px);
+  }
+
+  .popup-form__btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .btn-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: btnSpin 0.7s linear infinite;
+  }
+
+  @keyframes btnSpin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .popup-form__paragraph {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 20px auto 0;
+    max-width: 380px;
+    color: rgb(52, 72, 72);
+  }
+
+  .popup-form__paragraph .privacy {
+    color: rgb(52, 72, 72);
+    border-bottom: 1px solid rgb(52, 72, 72);
+  }
+
+  .form__message {
+    opacity: 0;
+    visibility: hidden;
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+    z-index: 1050;
+    transition: all 0.3s ease;
+  }
+
+  .form__message_active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .form__message-block {
+    position: relative;
+    background-color: #fff;
+    border-radius: 24px;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 15px;
+    padding: 50px 30px;
+    text-align: center;
+    cursor: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  }
+
+  .form__message-title {
+    text-transform: uppercase;
+    color: #0c2626;
+    font-size: 26px;
+    margin: 0;
+  }
+
+  .form__message-text {
+    margin-top: 20px;
+    font-size: 17px;
+    line-height: 24px;
+    color: #475569;
+  }
+</style>
